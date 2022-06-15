@@ -1,8 +1,16 @@
+using HotelListing.API.Data;
+using HotelListing.API.Mapping;
+using HotelListing.API.Repository.Abstract;
+using HotelListing.API.Repository.Concrete;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var connectionString = builder.Configuration.GetConnectionString("HotelListingConnection");
+builder.Services.AddDbContext<HotelListingDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -15,6 +23,11 @@ builder.Services.AddCors(options => {
     });
 
 builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
+
+builder.Services.AddAutoMapper(typeof(MapperConfig));
+
+builder.Services.AddScoped(typeof(IGenericDal<>), typeof(EfGenericRepository<>));
+builder.Services.AddScoped<ITestSuiteDal, EfTestSuiteRepository>();
 
 var app = builder.Build();
 
