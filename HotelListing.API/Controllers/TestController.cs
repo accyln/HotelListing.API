@@ -23,15 +23,22 @@ namespace HotelListing.API.Controllers
 
 
         [HttpGet]
+        [Route("GetCountries")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<IEnumerable<GetTestSuiteDto>>> GetCountries()
         {
-            var res = await testSuiteDal.GetAllAsync();
-            //var countries = await _countriesRepository.GetAllAsync();
-            var records = _mapper.Map<List<GetTestSuiteDto>>(res);
-            return Ok(records);
+           
+                var res = await testSuiteDal.GetAsync(12);
+                res.ModulId = 1;    
+                //var countries = await _countriesRepository.GetAllAsync();
+                var records = _mapper.Map<List<GetTestSuiteDto>>(res);
+                return Ok(records);
+           
         }
 
         [HttpPost]
+        [Route("PostCountry")]
+        [ApiVersion("1.0")]
         public async Task<ActionResult<TestSuite>> PostCountry(TestSuiteAddDto createCountryDto)
         {
             var country = _mapper.Map<TestSuite>(createCountryDto);
